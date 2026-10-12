@@ -46,8 +46,14 @@ func _ready() -> void:
 func set_line_speed(speed: float) -> void:
 	if speed == line_speed:
 		return
-		
+	
+	var old_speed: float = line_speed
 	line_speed = speed
+	
+	# A running countdown was timed for the old speed. Rescale it so the next
+	# sheet still spawns right behind the last one instead of leaving a gap.
+	if !sheet_spawn_timer.is_stopped() and old_speed > 0:
+		sheet_spawn_timer.start(sheet_spawn_timer.time_left * old_speed / line_speed)
 	
 	var t: float = globals.sheet_width / line_speed - 0.01
 	sheet_spawn_timer.wait_time = t
