@@ -74,16 +74,17 @@ func update() -> void:
 	score_changed.emit(yield_, ppm)
 
 
-func _on_sheet_cut(_sheet: SheetScene, ok: bool) -> void:
-	if ok:
-		ok_cuts += 1
-	else:
-		ng_cuts += 1
-	
+func _on_main_sheet_stacked(_at: Vector2) -> void:
+	ok_cuts += 1
 	update()
 
 
-func _on_sheet_missed(_sheet: SheetScene) -> void:
+func _on_main_sheets_scrapped(count: int, _at: Vector2) -> void:
+	ng_cuts += count
+	update()
+
+
+func _on_main_sheet_missed(_at: Vector2) -> void:
 	ng_cuts += 1
 	update()
 

@@ -7,6 +7,9 @@ signal sheet_missed(sheet: SheetScene)
 const OK_AREA_IDX: int = 0
 const NG_AREA_IDX: int = 1
 
+const STACKED_FLASH_COLOR: Color = Color(0.3, 1, 0.4)
+const SCRAPPED_FLASH_COLOR: Color = Color(1, 0.2, 0.15)
+
 var is_cutting: bool = false
 var is_moving_to_stack: bool = false
 var is_stacked: bool = false
@@ -23,6 +26,8 @@ var ok_cut: bool = true
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var ok_area: CollisionShape2D = $OkArea
 @onready var ng_area: CollisionShape2D = $NgArea
+@onready var flash: Polygon2D = $Flash
+@onready var cut_guide: CutGuide = $CutGuide
 
 @onready var speed_rotation: float = randf_range(-max_rotation, max_rotation)
 @onready var speed_skew: float = randf_range(-max_skew, max_skew)
@@ -32,8 +37,8 @@ var ok_cut: bool = true
 func _process(delta: float) -> void:
 	if is_stacked or is_moving_to_stack:
 		if is_moving_to_stack:
-			position = position.lerp(target_pos, delta * 2)
-			scale = scale.lerp(Vector2(0.5, 0.3), delta * 2)
+			position = position.lerp(target_pos, delta * 4)
+			scale = scale.lerp(Vector2(0.5, 0.3), delta * 4)
 			
 			# Stop the movement when it's at target position
 			if position.distance_to(target_pos) < 1:
@@ -57,10 +62,25 @@ func _process(delta: float) -> void:
 func move_to_stack(pos: Vector2) -> void:
 	target_pos = pos
 	is_moving_to_stack = true
+	cut_guide.set_style(CutGuide.Style.HIDDEN)
+	play_flash(STACKED_FLASH_COLOR, 0)
 
 
 func drop() -> void:
 	is_dropped = true
+	cut_guide.set_style(CutGuide.Style.HIDDEN)
+	play_flash(SCRAPPED_FLASH_COLOR, 0.5)
+
+
+func set_guide_style(style: CutGuide.Style) -> void:
+	cut_guide.set_style(style)
+
+
+# Tints the black sheet by fading a colored overlay from bright to final_alpha
+func play_flash(color: Color, final_alpha: float) -> void:
+	flash.color = color
+	var tween: Tween = create_tween()
+	tween.tween_property(flash, "color:a", final_alpha, 0.4).from(0.9)
 
 
 func update_y_position(delta: float) -> void:

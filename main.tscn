@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://b3l14vb23todi"]
+[gd_scene load_steps=21 format=3 uid="uid://b3l14vb23todi"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_cp1wt"]
 [ext_resource type="Script" path="res://game_screen.gd" id="1_hupoq"]
@@ -14,6 +14,14 @@
 [ext_resource type="Script" path="res://end_screen.gd" id="10_we75j"]
 [ext_resource type="AudioStream" uid="uid://7uvt4e55d3m1" path="res://retro-game-arcade-236133.mp3" id="11_tcasj"]
 [ext_resource type="Texture2D" uid="uid://cogssn8v8u1hu" path="res://sheet/sheet.png" id="14_lw4sr"]
+[ext_resource type="Script" path="res://feedback/feedback.gd" id="15_fdbk"]
+[ext_resource type="AudioStream" uid="uid://c7ighn72srxxk" path="res://feedback/scrap.wav" id="16_scrap"]
+[ext_resource type="Script" path="res://feedback/blade_trail.gd" id="17_trail"]
+[ext_resource type="Script" path="res://intro_screen.gd" id="18_intro"]
+[ext_resource type="Script" path="res://sheet/cut_guide.gd" id="19_guide"]
+
+[sub_resource type="Gradient" id="Gradient_swipe"]
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1)
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_cp1wt")
@@ -79,6 +87,27 @@ theme = ExtResource("3_8c0d6")
 theme_override_font_sizes/font_size = 25
 text = "Level:
 Beginner"
+
+[node name="BladeTrail" type="Line2D" parent="GameScreen"]
+z_index = 9
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+antialiased = true
+script = ExtResource("17_trail")
+
+[node name="Feedback" type="Node2D" parent="GameScreen"]
+z_index = 10
+script = ExtResource("15_fdbk")
+
+[node name="ScreenFlash" type="ColorRect" parent="GameScreen/Feedback"]
+offset_right = 1152.0
+offset_bottom = 648.0
+mouse_filter = 2
+color = Color(1, 0.15, 0.1, 0)
+
+[node name="ScrapSound" type="AudioStreamPlayer" parent="GameScreen/Feedback"]
+stream = ExtResource("16_scrap")
 
 [node name="StartScreen" type="CanvasLayer" parent="."]
 visible = false
@@ -157,65 +186,181 @@ grow_vertical = 0
 theme = ExtResource("3_8c0d6")
 text = "Play Again"
 
-[node name="Instruction screen" type="CanvasLayer" parent="."]
+[node name="IntroScreen" type="CanvasLayer" parent="."]
 visible = false
+script = ExtResource("18_intro")
 
-[node name="ColorRect" type="ColorRect" parent="Instruction screen"]
+[node name="ColorRect" type="ColorRect" parent="IntroScreen"]
 offset_right = 1152.0
 offset_bottom = 648.0
-color = Color(0, 0, 0, 0.52549)
+color = Color(0, 0, 0, 0.8)
 
-[node name="FinalScore" type="Label" parent="Instruction screen"]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -516.0
-offset_top = 50.0
-offset_right = 478.0
-offset_bottom = 251.0
-grow_horizontal = 2
+[node name="Title" type="Label" parent="IntroScreen"]
+offset_top = 26.0
+offset_right = 1152.0
+offset_bottom = 74.0
 theme = ExtResource("3_8c0d6")
-text = "Dragging your mouse or finger
-through the pancake inside
-the green zone"
+theme_override_font_sizes/font_size = 40
+text = "How to play"
+horizontal_alignment = 1
 
-[node name="StartGame" type="Button" parent="Instruction screen"]
+[node name="Story" type="Label" parent="IntroScreen"]
+offset_left = 20.0
+offset_top = 92.0
+offset_right = 1132.0
+offset_bottom = 140.0
+theme = ExtResource("3_8c0d6")
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 20
+text = "You're an operator in the Clean & Dry Room.
+Slice the pancake (electrode roll) into sheets with your sword!"
+horizontal_alignment = 1
+
+[node name="Steps" type="RichTextLabel" parent="IntroScreen"]
+offset_left = 60.0
+offset_top = 252.0
+offset_right = 700.0
+offset_bottom = 420.0
+mouse_filter = 2
+theme = ExtResource("3_8c0d6")
+theme_override_constants/line_separation = 18
+theme_override_font_sizes/normal_font_size = 20
+bbcode_enabled = true
+text = "→ Swipe ↑ or ↓ through the [color=#40ff73]green zone[/color]
+→ [color=#40ff73]Clean cut[/color]: sheet goes to jelly roll
+→ Cut mid-sheet: [color=#ff4d40]SCRAP![/color]
+→ Cut the rightmost sheet first"
+scroll_active = false
+
+[node name="DiagramBackdrop" type="ColorRect" parent="IntroScreen"]
+offset_left = 748.0
+offset_top = 220.0
+offset_right = 1052.0
+offset_bottom = 476.0
+mouse_filter = 2
+color = Color(0.82, 0.82, 0.82, 1)
+
+[node name="Diagram" type="Node2D" parent="IntroScreen"]
+texture_filter = 1
+position = Vector2(900, 336)
+scale = Vector2(0.8, 0.8)
+
+[node name="SheetLeft" type="Sprite2D" parent="IntroScreen/Diagram"]
+position = Vector2(-80, 10)
+texture = ExtResource("14_lw4sr")
+
+[node name="SheetRight" type="Sprite2D" parent="IntroScreen/Diagram"]
+position = Vector2(80, 10)
+texture = ExtResource("14_lw4sr")
+
+[node name="CutGuide" type="Node2D" parent="IntroScreen/Diagram"]
+script = ExtResource("19_guide")
+style = 3
+
+[node name="SheetLeftLabel" type="Label" parent="IntroScreen"]
+offset_left = 760.0
+offset_top = 450.0
+offset_right = 880.0
+offset_bottom = 470.0
+theme = ExtResource("3_8c0d6")
+theme_override_colors/font_color = Color(0.25, 0.25, 0.25, 1)
+theme_override_font_sizes/font_size = 16
+text = "Sheet"
+horizontal_alignment = 1
+
+[node name="SheetRightLabel" type="Label" parent="IntroScreen"]
+offset_left = 920.0
+offset_top = 450.0
+offset_right = 1040.0
+offset_bottom = 470.0
+theme = ExtResource("3_8c0d6")
+theme_override_colors/font_color = Color(0.25, 0.25, 0.25, 1)
+theme_override_font_sizes/font_size = 16
+text = "Sheet"
+horizontal_alignment = 1
+
+[node name="CutHere" type="Label" parent="IntroScreen"]
+offset_left = 780.0
+offset_top = 190.0
+offset_right = 1020.0
+offset_bottom = 218.0
+theme = ExtResource("3_8c0d6")
+theme_override_colors/font_color = Color(0.25, 1, 0.45, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 20
+text = "Cut here"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SwipeDemo" type="Line2D" parent="IntroScreen"]
+visible = false
+position = Vector2(900, 214)
+points = PackedVector2Array(0, -36, 0, 36)
+width = 8.0
+gradient = SubResource("Gradient_swipe")
+begin_cap_mode = 2
+end_cap_mode = 2
+antialiased = true
+
+[node name="DemoPerfect" type="Label" parent="IntroScreen"]
+modulate = Color(1, 1, 1, 0)
+offset_left = 740.0
+offset_top = 316.0
+offset_right = 1060.0
+offset_bottom = 356.0
+theme = ExtResource("3_8c0d6")
+theme_override_colors/font_color = Color(0.35, 1, 0.45, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 28
+text = "PERFECT!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Goal" type="Label" parent="IntroScreen"]
+offset_left = 20.0
+offset_top = 482.0
+offset_right = 1132.0
+offset_bottom = 554.0
+theme = ExtResource("3_8c0d6")
+theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
+theme_override_font_sizes/font_size = 20
+text = "Make as many jelly rolls (stacks of electrode sheets)
+as you can in 30 seconds!
+The line speeds up and the green zone fades!"
+horizontal_alignment = 1
+
+[node name="StartGame" type="Button" parent="IntroScreen"]
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -258.0
-offset_top = -185.0
-offset_right = 259.0
-offset_bottom = -55.0
+offset_left = -200.0
+offset_top = -88.0
+offset_right = 200.0
+offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 0
 theme = ExtResource("3_8c0d6")
-text = "Ok, let's go!"
-
-[node name="Sprite2D" type="Sprite2D" parent="Instruction screen"]
-position = Vector2(52, 420)
-texture = ExtResource("14_lw4sr")
-
-[node name="Sprite2D2" type="Sprite2D" parent="Instruction screen"]
-position = Vector2(211, 420)
-texture = ExtResource("14_lw4sr")
-
-[node name="Line2D" type="Line2D" parent="Instruction screen"]
-position = Vector2(137, 299)
-scale = Vector2(6.52301, 1.00649)
-points = PackedVector2Array(0, 0, 0, 220)
-default_color = Color(0, 1, 0.583333, 0.458824)
+text = "Let's go!"
 
 [connection signal="game_ended" from="." to="GameScreen" method="_on_main_game_ended"]
 [connection signal="game_ended" from="." to="GameScreen/RoundTimer" method="_on_main_game_ended"]
 [connection signal="game_started" from="." to="ScoreManager" method="_on_main_game_started"]
 [connection signal="game_started" from="." to="GameScreen" method="_on_main_game_started"]
-[connection signal="game_started" from="." to="GameScreen/RoundTimer" method="_on_game_started"]
 [connection signal="game_started" from="." to="GameScreen/RoundTimer" method="_on_main_game_started"]
+[connection signal="game_started" from="." to="GameScreen/RoundTimer" method="_on_game_started"]
 [connection signal="game_started" from="." to="GameScreen/Stack" method="_on_main_game_started"]
+[connection signal="game_started" from="." to="GameScreen/Feedback" method="_on_main_game_started"]
 [connection signal="reset_state_requested" from="." to="GameScreen/Scoreboard" method="_on_main_reset_state_requested"]
+[connection signal="sheet_missed" from="." to="ScoreManager" method="_on_main_sheet_missed"]
+[connection signal="sheet_missed" from="." to="GameScreen/Feedback" method="_on_main_sheet_missed"]
+[connection signal="sheet_stacked" from="." to="ScoreManager" method="_on_main_sheet_stacked"]
+[connection signal="sheet_stacked" from="." to="GameScreen/Feedback" method="_on_main_sheet_stacked"]
+[connection signal="sheets_scrapped" from="." to="ScoreManager" method="_on_main_sheets_scrapped"]
+[connection signal="sheets_scrapped" from="." to="GameScreen/Feedback" method="_on_main_sheets_scrapped"]
 [connection signal="score_changed" from="ScoreManager" to="GameScreen/Scoreboard" method="_on_score_changed"]
 [connection signal="score_changed" from="ScoreManager" to="EndScreen" method="_on_score_changed"]
 [connection signal="timeout" from="GameScreen/SheetSpawnTimer" to="." method="_on_sheet_spawn_timer_timeout"]
@@ -226,4 +371,5 @@ default_color = Color(0, 1, 0.583333, 0.458824)
 [connection signal="stack_completed" from="GameScreen/Stack" to="ScoreManager" method="_on_stack_completed"]
 [connection signal="pressed" from="StartScreen/StartGame" to="." method="_on_start_game_pressed"]
 [connection signal="pressed" from="EndScreen/PlayAgain" to="." method="_on_play_again_pressed"]
-[connection signal="pressed" from="Instruction screen/StartGame" to="." method="_on_start_game_pressed"]
+[connection signal="visibility_changed" from="IntroScreen" to="IntroScreen" method="_on_visibility_changed"]
+[connection signal="pressed" from="IntroScreen/StartGame" to="." method="_on_intro_start_pressed"]
