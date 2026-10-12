@@ -220,9 +220,9 @@ horizontal_alignment = 1
 
 [node name="Steps" type="RichTextLabel" parent="IntroScreen"]
 offset_left = 60.0
-offset_top = 252.0
+offset_top = 180.0
 offset_right = 700.0
-offset_bottom = 420.0
+offset_bottom = 348.0
 mouse_filter = 2
 theme = ExtResource("3_8c0d6")
 theme_override_constants/line_separation = 18
@@ -236,15 +236,15 @@ scroll_active = false
 
 [node name="DiagramBackdrop" type="ColorRect" parent="IntroScreen"]
 offset_left = 748.0
-offset_top = 220.0
+offset_top = 196.0
 offset_right = 1052.0
-offset_bottom = 476.0
+offset_bottom = 452.0
 mouse_filter = 2
 color = Color(0.82, 0.82, 0.82, 1)
 
 [node name="Diagram" type="Node2D" parent="IntroScreen"]
 texture_filter = 1
-position = Vector2(900, 336)
+position = Vector2(900, 312)
 scale = Vector2(0.8, 0.8)
 
 [node name="SheetLeft" type="Sprite2D" parent="IntroScreen/Diagram"]
@@ -261,9 +261,9 @@ style = 3
 
 [node name="SheetLeftLabel" type="Label" parent="IntroScreen"]
 offset_left = 760.0
-offset_top = 450.0
+offset_top = 426.0
 offset_right = 880.0
-offset_bottom = 470.0
+offset_bottom = 446.0
 theme = ExtResource("3_8c0d6")
 theme_override_colors/font_color = Color(0.25, 0.25, 0.25, 1)
 theme_override_font_sizes/font_size = 16
@@ -272,9 +272,9 @@ horizontal_alignment = 1
 
 [node name="SheetRightLabel" type="Label" parent="IntroScreen"]
 offset_left = 920.0
-offset_top = 450.0
+offset_top = 426.0
 offset_right = 1040.0
-offset_bottom = 470.0
+offset_bottom = 446.0
 theme = ExtResource("3_8c0d6")
 theme_override_colors/font_color = Color(0.25, 0.25, 0.25, 1)
 theme_override_font_sizes/font_size = 16
@@ -283,9 +283,9 @@ horizontal_alignment = 1
 
 [node name="CutHere" type="Label" parent="IntroScreen"]
 offset_left = 780.0
-offset_top = 190.0
+offset_top = 166.0
 offset_right = 1020.0
-offset_bottom = 218.0
+offset_bottom = 194.0
 theme = ExtResource("3_8c0d6")
 theme_override_colors/font_color = Color(0.25, 1, 0.45, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -297,7 +297,7 @@ vertical_alignment = 1
 
 [node name="SwipeDemo" type="Line2D" parent="IntroScreen"]
 visible = false
-position = Vector2(900, 214)
+position = Vector2(900, 190)
 points = PackedVector2Array(0, -36, 0, 36)
 width = 8.0
 gradient = SubResource("Gradient_swipe")
@@ -308,9 +308,9 @@ antialiased = true
 [node name="DemoPerfect" type="Label" parent="IntroScreen"]
 modulate = Color(1, 1, 1, 0)
 offset_left = 740.0
-offset_top = 316.0
+offset_top = 292.0
 offset_right = 1060.0
-offset_bottom = 356.0
+offset_bottom = 332.0
 theme = ExtResource("3_8c0d6")
 theme_override_colors/font_color = Color(0.35, 1, 0.45, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -322,9 +322,9 @@ vertical_alignment = 1
 
 [node name="Goal" type="Label" parent="IntroScreen"]
 offset_left = 20.0
-offset_top = 482.0
+offset_top = 462.0
 offset_right = 1132.0
-offset_bottom = 554.0
+offset_bottom = 534.0
 theme = ExtResource("3_8c0d6")
 theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
 theme_override_font_sizes/font_size = 20
@@ -352,8 +352,8 @@ text = "Let's go!"
 [connection signal="game_ended" from="." to="GameScreen/RoundTimer" method="_on_main_game_ended"]
 [connection signal="game_started" from="." to="ScoreManager" method="_on_main_game_started"]
 [connection signal="game_started" from="." to="GameScreen" method="_on_main_game_started"]
-[connection signal="game_started" from="." to="GameScreen/RoundTimer" method="_on_main_game_started"]
 [connection signal="game_started" from="." to="GameScreen/RoundTimer" method="_on_game_started"]
+[connection signal="game_started" from="." to="GameScreen/RoundTimer" method="_on_main_game_started"]
 [connection signal="game_started" from="." to="GameScreen/Stack" method="_on_main_game_started"]
 [connection signal="game_started" from="." to="GameScreen/Feedback" method="_on_main_game_started"]
 [connection signal="reset_state_requested" from="." to="GameScreen/Scoreboard" method="_on_main_reset_state_requested"]
