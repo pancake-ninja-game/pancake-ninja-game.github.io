@@ -2,8 +2,12 @@ class_name OperatorScene
 extends Node2D
 
 const DEFAULT_POSITION_X: int = 400
-const MOVE_SPEED: int = 300
-const MOVE_THRESHOLD: int = 250
+const MOVE_SPEED: int = 400
+# Start walking once the mouse is this far away, then keep walking until within
+# STOP_DISTANCE. The gap between the two keeps the operator from flickering
+# between walking and idle when the mouse hovers near the threshold.
+const MOVE_THRESHOLD: int = 60
+const STOP_DISTANCE: int = 10
 
 var movement_enabled: bool = true
 var cutting_enabled: bool = false
@@ -29,17 +33,21 @@ func _process(delta: float) -> void:
 func update_position(delta: float) -> void:
 	var target_x: float = get_global_mouse_position().x
 	var diff_x: float = target_x - position.x
-	
+	var distance: float = abs(diff_x)
+
+	var threshold: int = STOP_DISTANCE if is_walking else MOVE_THRESHOLD
+	if distance <= threshold:
+		stop_walking_animation()
+		return
+
 	var d: int = sign(diff_x)
 	if d != direction:
 		animated_sprite.flip_h = d < 0
 		direction = d
-	
-	if abs(diff_x) > MOVE_THRESHOLD:
-		position.x += direction * MOVE_SPEED * delta
-		play_walking_animation()
-	else:
-		stop_walking_animation()
+
+	# Don't step past the mouse, or the operator jitters back and forth around it
+	position.x += direction * min(MOVE_SPEED * delta, distance)
+	play_walking_animation()
 
 
 func play_walking_animation() -> void:
