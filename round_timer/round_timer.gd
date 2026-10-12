@@ -47,9 +47,12 @@ func _on_timer_timeout() -> void:
 		timer.stop()
 		return
 		
-	if time_left % (globals.ROUND_LENGTH / globals.LEVELS) == 0:
-		var next: int = (globals.ROUND_LENGTH - time_left) / (globals.ROUND_LENGTH / globals.LEVELS)
-		level_change_requested.emit(next)
+	var time_passed: int = globals.ROUND_LENGTH - time_left
+	var level_end: int = 0
+	for i: int in len(globals.LEVEL_DURATIONS) - 1:
+		level_end += globals.LEVEL_DURATIONS[i]
+		if time_passed == level_end:
+			level_change_requested.emit(i + 1)
 
 
 func _on_main_game_started() -> void:

@@ -81,12 +81,13 @@ PPM: 0"
 layout_mode = 0
 offset_left = -29.0
 offset_top = 60.0
-offset_right = 282.0
-offset_bottom = 123.0
+offset_right = 226.0
+offset_bottom = 140.0
 theme = ExtResource("3_8c0d6")
-theme_override_font_sizes/font_size = 25
+theme_override_font_sizes/font_size = 22
 text = "Level:
 Beginner"
+autowrap_mode = 3
 
 [node name="BladeTrail" type="Line2D" parent="GameScreen"]
 z_index = 9
@@ -350,8 +351,8 @@ text = "Let's go!"
 [connection signal="game_ended" from="." to="GameScreen/RoundTimer" method="_on_main_game_ended"]
 [connection signal="game_started" from="." to="ScoreManager" method="_on_main_game_started"]
 [connection signal="game_started" from="." to="GameScreen" method="_on_main_game_started"]
-[connection signal="game_started" from="." to="GameScreen/RoundTimer" method="_on_main_game_started"]
 [connection signal="game_started" from="." to="GameScreen/RoundTimer" method="_on_game_started"]
+[connection signal="game_started" from="." to="GameScreen/RoundTimer" method="_on_main_game_started"]
 [connection signal="game_started" from="." to="GameScreen/Stack" method="_on_main_game_started"]
 [connection signal="game_started" from="." to="GameScreen/Feedback" method="_on_main_game_started"]
 [connection signal="reset_state_requested" from="." to="GameScreen/Scoreboard" method="_on_main_reset_state_requested"]

@@ -9,7 +9,8 @@ signal sheets_scrapped(count: int, at: Vector2)
 signal sheet_missed(at: Vector2)
 
 const DEFAULT_LINE_SPEED: int = 200
-var line_speeds: Array[int] = [200, 300, 350]
+# F1 is a big jump up from Production
+var line_speeds: Array[int] = [200, 250, 300, 500]
 
 var is_playing: bool = false
 var line_speed: float
