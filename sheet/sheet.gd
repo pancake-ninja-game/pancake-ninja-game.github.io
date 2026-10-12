@@ -9,6 +9,7 @@ const NG_AREA_IDX: int = 1
 
 const STACKED_FLASH_COLOR: Color = Color(0.3, 1, 0.4)
 const SCRAPPED_FLASH_COLOR: Color = Color(1, 0.2, 0.15)
+const ROLLED_FLASH_COLOR: Color = Color(1, 0.85, 0.2)
 
 var is_cutting: bool = false
 var is_moving_to_stack: bool = false
@@ -22,6 +23,7 @@ var speed_y: float
 var target_pos: Vector2
 
 var ok_cut: bool = true
+var flash_tween: Tween
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var ok_area: CollisionShape2D = $OkArea
@@ -66,6 +68,15 @@ func move_to_stack(pos: Vector2) -> void:
 	play_flash(STACKED_FLASH_COLOR, 0)
 
 
+# Packs the sheet into a finished jelly roll, keeping a tint so the roll stands
+# out from the sheets still being stacked
+func roll_into(pos: Vector2, tint_alpha: float) -> void:
+	target_pos = pos
+	is_stacked = false
+	is_moving_to_stack = true
+	play_flash(ROLLED_FLASH_COLOR, tint_alpha)
+
+
 func drop() -> void:
 	is_dropped = true
 	cut_guide.set_style(CutGuide.Style.HIDDEN)
@@ -78,9 +89,14 @@ func set_guide_style(style: CutGuide.Style) -> void:
 
 # Tints the black sheet by fading a colored overlay from bright to final_alpha
 func play_flash(color: Color, final_alpha: float) -> void:
+	# A sheet that is rolled right after being stacked would otherwise have two
+	# tweens fighting over the alpha
+	if flash_tween:
+		flash_tween.kill()
+
 	flash.color = color
-	var tween: Tween = create_tween()
-	tween.tween_property(flash, "color:a", final_alpha, 0.4).from(0.9)
+	flash_tween = create_tween()
+	flash_tween.tween_property(flash, "color:a", final_alpha, 0.4).from(0.9)
 
 
 func update_y_position(delta: float) -> void:
