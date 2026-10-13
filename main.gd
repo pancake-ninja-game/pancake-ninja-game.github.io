@@ -14,7 +14,7 @@ var line_speeds: Array[int] = [200, 250, 300, 500]
 
 var is_playing: bool = false
 var line_speed: float
-var current_level: int = 0
+var current_difficulty: int = 0
 var pancake_sheets: Array[SheetScene] = []
 
 var sheet_scene: PackedScene = preload("res://sheet/sheet.tscn")
@@ -84,7 +84,7 @@ func start_game() -> void:
 	reset_state()
 	
 	is_playing = true
-	current_level = 0
+	current_difficulty = 0
 	set_screen_visibility(false, false, true, false)
 	set_line_speed(DEFAULT_LINE_SPEED)
 	menu_music.stop()
@@ -117,7 +117,7 @@ func spawn_sheet() -> void:
 	update_cut_guides()
 
 
-# Highlights the seam to cut next. The highlight fades as the levels get harder.
+# Highlights the seam to cut next. The highlight fades as the difficulty goes up.
 func update_cut_guides() -> void:
 	for i: int in len(pancake_sheets):
 		var style: CutGuide.Style = next_cut_guide_style() if i == 0 else CutGuide.Style.FAINT
@@ -125,7 +125,7 @@ func update_cut_guides() -> void:
 
 
 func next_cut_guide_style() -> CutGuide.Style:
-	match current_level:
+	match current_difficulty:
 		0:
 			return CutGuide.Style.ZONE
 		1:
@@ -198,7 +198,7 @@ func _on_round_timer_timeout() -> void:
 	end_game()
 
 
-func _on_round_timer_level_change_requested(level_index: int) -> void:
-	current_level = level_index
-	set_line_speed(line_speeds[level_index])
+func _on_round_timer_difficulty_change_requested(difficulty_index: int) -> void:
+	current_difficulty = difficulty_index
+	set_line_speed(line_speeds[difficulty_index])
 	update_cut_guides()

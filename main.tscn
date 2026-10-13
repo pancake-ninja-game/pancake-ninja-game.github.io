@@ -78,7 +78,7 @@ theme_override_font_sizes/font_size = 25
 text = "Yield: 0%
 PPM: 0"
 
-[node name="Level" type="Label" parent="GameScreen/Scoreboard"]
+[node name="Difficulty" type="Label" parent="GameScreen/Scoreboard"]
 layout_mode = 0
 offset_left = -29.0
 offset_top = 60.0
@@ -86,8 +86,8 @@ offset_right = 226.0
 offset_bottom = 140.0
 theme = ExtResource("3_8c0d6")
 theme_override_font_sizes/font_size = 22
-text = "Level:
-Beginner"
+text = "Difficulty:
+Commissioning"
 autowrap_mode = 3
 
 [node name="BladeTrail" type="Line2D" parent="GameScreen"]
@@ -366,8 +366,9 @@ text = "Let's go!"
 [connection signal="score_changed" from="ScoreManager" to="GameScreen/Scoreboard" method="_on_score_changed"]
 [connection signal="score_changed" from="ScoreManager" to="EndScreen" method="_on_score_changed"]
 [connection signal="timeout" from="GameScreen/SheetSpawnTimer" to="." method="_on_sheet_spawn_timer_timeout"]
-[connection signal="level_change_requested" from="GameScreen/RoundTimer" to="." method="_on_round_timer_level_change_requested"]
-[connection signal="level_change_requested" from="GameScreen/RoundTimer" to="GameScreen/Scoreboard" method="_on_round_timer_level_change_requested"]
+[connection signal="difficulty_change_requested" from="GameScreen/RoundTimer" to="." method="_on_round_timer_difficulty_change_requested"]
+[connection signal="difficulty_change_requested" from="GameScreen/RoundTimer" to="GameScreen/Scoreboard" method="_on_round_timer_difficulty_change_requested"]
+[connection signal="difficulty_change_requested" from="GameScreen/RoundTimer" to="GameScreen/Feedback" method="_on_round_timer_difficulty_change_requested"]
 [connection signal="tick" from="GameScreen/RoundTimer" to="ScoreManager" method="_on_round_timer_tick"]
 [connection signal="timeout" from="GameScreen/RoundTimer" to="." method="_on_round_timer_timeout"]
 [connection signal="stack_completed" from="GameScreen/Stack" to="ScoreManager" method="_on_stack_completed"]

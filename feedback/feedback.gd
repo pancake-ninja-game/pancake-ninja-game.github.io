@@ -9,6 +9,11 @@ const POPUP_RISE: int = 80
 const PERFECT_COLOR: Color = Color(0.35, 1, 0.45)
 const FAIL_COLOR: Color = Color(1, 0.3, 0.25)
 const SCREEN_FLASH_ALPHA: float = 0.35
+const ANNOUNCE_COLOR: Color = Color(1, 0.85, 0.2)
+# Above the line, so the banner doesn't hide the sheets
+const ANNOUNCE_Y: int = 190
+const ANNOUNCE_HEIGHT: int = 140
+const ANNOUNCE_HOLD: float = 1.4
 
 var streak: int = 0
 
@@ -16,8 +21,7 @@ var streak: int = 0
 @onready var scrap_sound: AudioStreamPlayer = $ScrapSound
 
 
-# Shows text that pops in at the given point, floats up and fades out
-func popup(text: String, color: Color, at: Vector2, font_size: int) -> void:
+func make_label(text: String, color: Color, font_size: int, width: float) -> Label:
 	var label: Label = Label.new()
 	label.theme = THEME
 	label.text = text
@@ -27,8 +31,14 @@ func popup(text: String, color: Color, at: Vector2, font_size: int) -> void:
 	label.add_theme_color_override("font_color", color)
 	label.add_theme_color_override("font_outline_color", Color.BLACK)
 	label.add_theme_constant_override("outline_size", 12)
-	label.size = Vector2(POPUP_WIDTH, font_size * 2)
+	label.size = Vector2(width, font_size * 2)
 	label.pivot_offset = label.size / 2
+	return label
+
+
+# Shows text that pops in at the given point, floats up and fades out
+func popup(text: String, color: Color, at: Vector2, font_size: int) -> void:
+	var label: Label = make_label(text, color, font_size, POPUP_WIDTH)
 	label.scale = Vector2(0.3, 0.3)
 	
 	# Keep the whole popup on screen
@@ -41,6 +51,34 @@ func popup(text: String, color: Color, at: Vector2, font_size: int) -> void:
 	tween.parallel().tween_property(label, "position:y", label.position.y - POPUP_RISE, 0.9)
 	tween.parallel().tween_property(label, "modulate:a", 0.0, 0.3).set_delay(0.6)
 	tween.tween_callback(label.queue_free)
+
+
+# Shows a banner across the screen that snaps open, holds, and fades out
+func announce(title: String, subtitle: String) -> void:
+	var banner: ColorRect = ColorRect.new()
+	banner.color = Color(0, 0, 0, 0.65)
+	# Let swipes through, the game keeps going underneath
+	banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	banner.size = Vector2(globals.WINDOW_WIDTH, ANNOUNCE_HEIGHT)
+	banner.position = Vector2(0, ANNOUNCE_Y - ANNOUNCE_HEIGHT / 2.0)
+	banner.pivot_offset = banner.size / 2
+	banner.scale = Vector2(1, 0)
+	add_child(banner)
+	
+	var title_label: Label = make_label(title, ANNOUNCE_COLOR, 52, globals.WINDOW_WIDTH)
+	title_label.position = Vector2(0, 0)
+	banner.add_child(title_label)
+	
+	var subtitle_label: Label = make_label(subtitle, Color.WHITE, 30, globals.WINDOW_WIDTH)
+	subtitle_label.position = Vector2(0, ANNOUNCE_HEIGHT - subtitle_label.size.y - 10)
+	banner.add_child(subtitle_label)
+	
+	var tween: Tween = banner.create_tween()
+	tween.tween_property(banner, "scale:y", 1.0, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_property(title_label, "scale", Vector2.ONE, 0.35).from(Vector2(1.6, 1.6)).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_interval(ANNOUNCE_HOLD)
+	tween.tween_property(banner, "modulate:a", 0.0, 0.4)
+	tween.tween_callback(banner.queue_free)
 
 
 func fail(text: String, at: Vector2) -> void:
@@ -76,3 +114,7 @@ func _on_main_sheet_missed(at: Vector2) -> void:
 
 func _on_main_game_started() -> void:
 	streak = 0
+
+
+func _on_round_timer_difficulty_change_requested(difficulty_index: int) -> void:
+	announce("DIFFICULTY UP!", globals.DIFFICULTY_NAMES[difficulty_index].to_upper())

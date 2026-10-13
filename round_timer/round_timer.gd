@@ -3,7 +3,7 @@ extends Node2D
 
 signal timeout
 signal tick(time_passed: int)
-signal level_change_requested(level_index: int)
+signal difficulty_change_requested(difficulty_index: int)
 
 var time_left: int
 
@@ -48,11 +48,11 @@ func _on_timer_timeout() -> void:
 		return
 		
 	var time_passed: int = globals.ROUND_LENGTH - time_left
-	var level_end: int = 0
-	for i: int in len(globals.LEVEL_DURATIONS) - 1:
-		level_end += globals.LEVEL_DURATIONS[i]
-		if time_passed == level_end:
-			level_change_requested.emit(i + 1)
+	var difficulty_end: int = 0
+	for i: int in len(globals.DIFFICULTY_DURATIONS) - 1:
+		difficulty_end += globals.DIFFICULTY_DURATIONS[i]
+		if time_passed == difficulty_end:
+			difficulty_change_requested.emit(i + 1)
 
 
 func _on_main_game_started() -> void:
