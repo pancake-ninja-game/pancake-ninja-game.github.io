@@ -2,7 +2,10 @@ name: Publish web export
 
 on:
   push:
-    branch: main
+    branches: [main]
+
+env:
+  GODOT_VERSION: 4.3
 
 jobs:
   publish:
@@ -13,10 +16,27 @@ jobs:
       - name: Check out
         uses: actions/checkout@v4
 
+      - name: Install Godot and export templates
+        run: |
+          base=https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable
+          curl -fsSL -o godot.zip "$base/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          curl -fsSL -o templates.tpz "$base/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          unzip -q godot.zip
+          sudo mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" /usr/local/bin/godot
+          templates_dir="$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable"
+          mkdir -p "$templates_dir"
+          unzip -q templates.tpz
+          mv templates/* "$templates_dir/"
+          rm -rf godot.zip templates.tpz templates
+
+      - name: Export web build
+        run: |
+          godot --headless --import
+          godot --headless --export-release "Web" export/web/index.html
+          test -f export/web/index.pck
+
       - name: Publish web export to gh-pages branch
         uses: rayluo/github-pages-overwriter@v1.3
-
         with:
           source-directory: export/web/
           target-branch: gh-pages
-
