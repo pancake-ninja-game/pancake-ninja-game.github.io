@@ -15,10 +15,11 @@ var cutting_enabled: bool = false
 var position_x: int = DEFAULT_POSITION_X
 var direction: int = 1 # 1 = right, -1 = left
 var is_walking: bool = false
-var is_cutting: bool = false
+var is_sword_up: bool = false
 
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var cutting_sound: AudioStreamPlayer2D = $CuttingSound
+@onready var cut_line: CollisionShape2D = $CollisionShape2D
 
 
 func _ready() -> void:
@@ -26,8 +27,9 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if movement_enabled and !is_cutting:
+	if movement_enabled:
 		update_position(delta)
+		update_sword()
 
 
 func update_position(delta: float) -> void:
@@ -50,32 +52,39 @@ func update_position(delta: float) -> void:
 	play_walking_animation()
 
 
+# The sword follows the mouse: raised above the cut line, lowered below it, so
+# swiping through the line swings it
+func update_sword() -> void:
+	var sword_up: bool = get_global_mouse_position().y < cut_line.global_position.y
+	if sword_up == is_sword_up:
+		return
+	
+	is_sword_up = sword_up
+	if is_walking:
+		animated_sprite.play(sword_animation("walking"))
+	else:
+		animated_sprite.animation = sword_animation("idle")
+
+
+# The variant of an animation that matches the current sword position
+func sword_animation(base_name: String) -> StringName:
+	return base_name + "_up" if is_sword_up else base_name
+
+
 func play_walking_animation() -> void:
-	if is_walking or is_cutting:
+	if is_walking:
 		return
 	
 	is_walking = true
-	animated_sprite.animation = "walking"
-	animated_sprite.play()
+	animated_sprite.play(sword_animation("walking"))
 
 func stop_walking_animation() -> void:
 	if !is_walking:
 		return
 	
-	animated_sprite.animation = "idle"
+	animated_sprite.animation = sword_animation("idle")
 	animated_sprite.stop()
 	is_walking = false
 
-func play_cut_animation() -> void:
-	if is_cutting:
-		return
-		
-	is_cutting = true
-	cutting_sound.play()
-	animated_sprite.animation = "cutting"
-	animated_sprite.play()
-	is_cutting = false
-	
-
 func _on_mouse_entered() -> void:
-	play_cut_animation()
+	cutting_sound.play()
