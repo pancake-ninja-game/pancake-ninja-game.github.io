@@ -36,7 +36,9 @@ jobs:
           test -f export/web/index.pck
 
       - name: Publish web export to gh-pages branch
-        uses: rayluo/github-pages-overwriter@v1.3
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          source-directory: export/web/
-          target-branch: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./export/web
+          publish_branch: gh-pages
+          force_orphan: true
