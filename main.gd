@@ -28,7 +28,7 @@ var stack_scene: PackedScene = preload("res://stack/stack.tscn")
 @onready var sheet_spawn_timer: Timer = $GameScreen/SheetSpawnTimer
 @onready var round_timer: RoundTimerScene = $GameScreen/RoundTimer
 @onready var stack: StackScene = $GameScreen/Stack
-@onready var scoreboard: Scoreboard = $GameScreen/Scoreboard
+@onready var scoreboard: Scoreboard = $Scoreboard
 
 @onready var menu_music: AudioStreamPlayer2D = $MenuMusic
 @onready var game_music: AudioStreamPlayer2D = $GameMusic
@@ -65,6 +65,8 @@ func set_screen_visibility(start: bool, intro: bool, game: bool, end: bool) -> v
 	start_screen.visible = start
 	intro_screen.visible = intro
 	game_screen.visible = game
+	# Lives outside the game screen layer so the operator is drawn in front of it
+	scoreboard.visible = game
 	end_screen.visible = end
 
 
