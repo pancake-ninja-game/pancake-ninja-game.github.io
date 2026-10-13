@@ -8,9 +8,8 @@ signal sheet_stacked(at: Vector2)
 signal sheets_scrapped(count: int, at: Vector2)
 signal sheet_missed(at: Vector2)
 
-const DEFAULT_LINE_SPEED: int = 200
 # F1 is a big jump up from Production
-var line_speeds: Array[int] = [200, 250, 300, 500]
+var line_speeds: Array[int] = [120, 200, 300, 500]
 
 var is_playing: bool = false
 var line_speed: float
@@ -88,7 +87,7 @@ func start_game() -> void:
 	is_playing = true
 	current_difficulty = 0
 	set_screen_visibility(false, false, true, false)
-	set_line_speed(DEFAULT_LINE_SPEED)
+	set_line_speed(line_speeds[0])
 	menu_music.stop()
 	game_music.play()
 	game_started.emit()
