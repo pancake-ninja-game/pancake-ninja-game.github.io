@@ -363,6 +363,7 @@ text = "Let's go!"
 [connection signal="sheet_stacked" from="." to="ScoreManager" method="_on_main_sheet_stacked"]
 [connection signal="sheet_stacked" from="." to="GameScreen/Feedback" method="_on_main_sheet_stacked"]
 [connection signal="sheets_scrapped" from="." to="ScoreManager" method="_on_main_sheets_scrapped"]
+[connection signal="sheets_left_uncut" from="." to="ScoreManager" method="_on_main_sheets_left_uncut"]
 [connection signal="sheets_scrapped" from="." to="GameScreen/Feedback" method="_on_main_sheets_scrapped"]
 [connection signal="score_changed" from="ScoreManager" to="Scoreboard" method="_on_score_changed"]
 [connection signal="score_changed" from="ScoreManager" to="EndScreen" method="_on_score_changed"]
