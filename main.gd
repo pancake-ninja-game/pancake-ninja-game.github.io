@@ -7,6 +7,7 @@ signal reset_state_requested
 signal sheet_stacked(at: Vector2)
 signal sheets_scrapped(count: int, at: Vector2)
 signal sheet_missed(at: Vector2)
+signal sheets_left_uncut(count: int)
 
 # F1 is a big jump up from Production
 var line_speeds: Array[int] = [120, 200, 300, 500]
@@ -96,10 +97,21 @@ func start_game() -> void:
 func end_game() -> void:
 	is_playing = false
 	set_screen_visibility(false, false, false, true)
+	sheets_left_uncut.emit(count_cuttable_sheets())
 	remove_uncut_sheets()
 	game_music.stop()
 	menu_music.play()
 	game_ended.emit()
+
+
+# Uncut sheets whose seam has come onto the screen. The newest sheet's seam can
+# still be off screen, and it would be unfair to count that one as missed.
+func count_cuttable_sheets() -> int:
+	var count: int = 0
+	for s: SheetScene in pancake_sheets:
+		if s.position.x - globals.sheet_width / 2 >= 0:
+			count += 1
+	return count
 
 
 func spawn_sheet() -> void:

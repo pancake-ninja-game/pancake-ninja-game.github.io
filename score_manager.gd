@@ -64,11 +64,11 @@ func update_ppm() -> bool:
 
 	
 func update() -> void:
-	var changed: bool = false
-	changed = changed or update_yield()
-	changed = changed or update_ppm()
-	
-	if !changed:
+	# Both must run, so no short-circuiting `or`
+	var yield_changed: bool = update_yield()
+	var ppm_changed: bool = update_ppm()
+
+	if !yield_changed and !ppm_changed:
 		return
 	
 	score_changed.emit(yield_, ppm)
@@ -86,6 +86,12 @@ func _on_main_sheets_scrapped(count: int, _at: Vector2) -> void:
 
 func _on_main_sheet_missed(_at: Vector2) -> void:
 	ng_cuts += 1
+	update()
+
+
+# Sheets still on the line when the round ends were never cut
+func _on_main_sheets_left_uncut(count: int) -> void:
+	ng_cuts += count
 	update()
 
 
